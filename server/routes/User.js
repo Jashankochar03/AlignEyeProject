@@ -6,7 +6,8 @@ const router = express.Router()
 const {
   login,
   signup,
-  sendotp
+  sendotp,
+  googleAuth
 } = require("../controllers/Auth")
 const {
   resetPasswordToken,
@@ -20,6 +21,23 @@ const { auth } = require("../middlewares/auth")
 // ********************************************************************************************************
 //                                      Authentication routes
 // ********************************************************************************************************
+const passport = require("passport");
+const { googleAuth } = require("../controllers/Auth");
+
+// Step 1: Redirect to Google
+router.get("/google", passport.authenticate("google", { scope: ["profile", "email"] }));
+
+// Step 2: Handle callback
+router.get(
+  "/google/signup",
+  passport.authenticate("google", {
+    session: false,                  // ✅ You're not using sessions
+    failureRedirect: "/login",       // Optional: can redirect on failure
+  }),
+  googleAuth                  // ✅ Handles token generation and DB ops
+);
+
+
 
 // Route for user login
 router.post("/login", login)

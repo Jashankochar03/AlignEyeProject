@@ -190,7 +190,7 @@ exports.login = async (req, res) => {
     // Generate JWT token and Compare Password
     if (await bcrypt.compare(password, user.password)) {
       const token = jwt.sign(
-        { email: user.email, id: user._id, role: user.role },
+        { email: user.email, id: user._id, role: user.accountType },
         process.env.JWT_SECRET,
         {
           expiresIn: "24h",
@@ -199,6 +199,7 @@ exports.login = async (req, res) => {
 
       // Save token to user document in database
       user.token = token
+      await user.save();
       user.password = undefined
       // Set cookie for token and return success response
       const options = {
@@ -226,3 +227,95 @@ exports.login = async (req, res) => {
     })
   }
 }
+
+
+
+
+exports.googleAuth = async (req, res) => {
+  try {
+    const googleProfile = req.user;
+
+    const { given_name, family_name, email, picture, sub: googleId } = googleProfile._json;
+
+    // Check if user already exists
+    let user = await User.findOne({ email });
+
+    if (user) {
+      // User exists – generate token or respond
+      const token = jwt.sign(
+        { email: user.email, id: user._id, role: user.accountType },
+        process.env.JWT_SECRET,
+        {
+          expiresIn: "24h",
+        })
+      // Save token to user document in database
+      user.token = token
+      await user.save();
+      user.password = undefined
+      // Set cookie for token and return success response
+      const options = {
+        expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
+        httpOnly: true,
+      }
+      return res.cookie("token", token, options).status(200).json({
+        success: true,
+        token,
+        user,
+        message: `User Login Success`,
+      })
+    }
+
+    // Create profile first
+    const profileDetails = await Profile.create({
+      gender: null,
+      dateOfBirth: null,
+      about: null,
+      contactNumber: null,
+    });
+
+    // Create user
+    user = await User.create({
+      firstName: given_name,
+      lastName: family_name,
+      email: email,
+      contactNumber: null,
+      password: null, // No password for Google users
+      accountType: "Customer", // or infer based on email domain
+      provider: "google",
+      googleId: googleId,
+      approved: true,
+      additionalDetails: profileDetails._id,
+      image: picture || `https://api.dicebear.com/5.x/initials/svg?seed=${given_name} ${family_name}`,
+    });
+
+      const token = jwt.sign(
+        { email: user.email, id: user._id, role: user.accountType },
+        process.env.JWT_SECRET,
+        {
+          expiresIn: "24h",
+        })
+      // Save token to user document in database
+      user.token = token
+      await user.save();
+      user.password = undefined
+      // Set cookie for token and return success response
+      const options = {
+        expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
+        httpOnly: true,
+      }
+      return res.cookie("token", token, options).status(200).json({
+        success: true,
+        token,
+        user,
+        message: `User SignUp Success`,
+      });
+  } catch (error) {
+    console.error("Google OAuth error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Google authentication failed. Please try again.",
+    });
+  }
+};
+
+
