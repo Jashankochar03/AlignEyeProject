@@ -22,7 +22,7 @@ const { auth } = require("../middlewares/auth")
 //                                      Authentication routes
 // ********************************************************************************************************
 const passport = require("passport");
-const { googleAuth } = require("../controllers/Auth");
+
 
 // Step 1: Redirect to Google
 router.get("/google", passport.authenticate("google", { scope: ["profile", "email"] }));

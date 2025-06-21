@@ -1,11 +1,6 @@
 const Profile = require("../models/Profile")
-const HealthRecords = require("../models/HealthRecords")
-
-const Disease = require("../models/Disease")
 const User = require("../models/User")
-const { uploadImageToCloudinary } = require("../utils/imageUploader")
 const mongoose = require("mongoose")
-const { convertSecondsToDuration } = require("../utils/secToDuration")
 // Method for updating a profile
 exports.updateProfile = async (req, res) => {
   try {
