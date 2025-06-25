@@ -9,6 +9,20 @@ const coursesSchema = new mongoose.Schema({
     ref: "user",
   },
   benefitsOfCourse: { type: String },
+  difficulty: {
+    type: String,
+    enum: ["Beginner", "Moderate", "Pro"],
+    default : "Beginner"
+  },
+  genderSpecific: {
+    type: String,
+    enum: ["Male Only", "Female Only", "Both"],
+    default : "Both"
+  },
+  price:{
+    type:Number,
+    default:0
+  },
   courseContent: [
     {
       type: mongoose.Schema.Types.ObjectId,
