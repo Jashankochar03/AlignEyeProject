@@ -51,6 +51,12 @@ const userSchema = new mongoose.Schema(
 				ref: "Course",
 			},
 		],
+    blogs: [
+			{
+				type: mongoose.Schema.Types.ObjectId,
+				ref: "Blogs",
+			},
+		],
     token: {
 	type: String,
 	},

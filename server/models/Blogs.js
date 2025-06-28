@@ -8,7 +8,7 @@ const blogSchema = new mongoose.Schema({
     required: true,
     ref: "user",
   },
-  blogData: { type: String },
+  blogData: { type: String , required:true},
 
   ratingAndReviews: [
     {
@@ -30,9 +30,6 @@ const blogSchema = new mongoose.Schema({
       ref: "user",
     },
   ],
-  blogImages: {
-    type: [String],
-  },
   status: {
     type: String,
     enum: ["Draft", "Published"],
@@ -42,4 +39,4 @@ const blogSchema = new mongoose.Schema({
 
 }, { timestamps: true });
 
-module.exports = mongoose.model("Blog", blogSchema);
+module.exports = mongoose.model("Blogs", blogSchema);

@@ -25,10 +25,6 @@ exports.createCourse = async (req, res) => {
     // Get thumbnail image from request files
     const thumbnail = req.files.thumbnailImage
 
-    // Convert the tag and instructions from stringified Array to Array
-    const instructions = JSON.parse(_instructions)
-    console.log("instructions", instructions)
-
     // Check if any of the required fields are missing
     if (
       !courseName ||
@@ -65,10 +61,10 @@ exports.createCourse = async (req, res) => {
       })
     }
     // Upload the Thumbnail to Cloudinary
-    const thumbnailImage = await uploadImageToCloudinary(
-      thumbnail,
-      process.env.FOLDER_NAME
-    )
+      const thumbnailImage = await uploadImageToS3(
+        thumbnail,
+        process.env.FOLDER_NAME
+      )
     console.log(thumbnailImage)
     // Create a new course with the given details
     const newCourse = await Course.create({
@@ -80,7 +76,7 @@ exports.createCourse = async (req, res) => {
       difficulty,
       genderSpecific,
       exerciseCategory: categoryDetails._id,
-      thumbnail: thumbnailImage.secure_url,
+      thumbnail: thumbnailImage.Location,
       status: status
     })
 

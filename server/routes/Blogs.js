@@ -4,12 +4,15 @@ const router = express.Router()
 
 // Import the Controllers
 
-// Course Controllers Import
-//const {
-//  createDisease,
-//  getAllDiseases,
-//  getDiseaseDetails,
-//} = require("../controllers/Disease")
+// Blogs Controllers Import
+const {
+  createBlog,
+  editBlog,
+  getBlogDetails,
+  getAllBlogs,
+  getCreatorBlogs,
+  deleteBlog
+} = require("../controllers/Blogs")
 
 
 // Categories Controllers Import
@@ -34,21 +37,19 @@ const { auth, isEmployee, isCustomer, isAdmin } = require("../middlewares/auth")
 //                                      Disease routes
 // ********************************************************************************************************
 
-// Diseases can only be registered by admin
-//router.post("/createDisease", auth, isDoctor, createDisease)
-
-// Get all Registered Diseases
-//router.get("/getAllDiseases", getAllDiseases)
-// Get Details for a Specific One
-//router.get("/getDiseaseDetails", getDiseaseDetails)
-
-
+// Blogs can only be registered by employee
+router.post("/createBlog", auth, isEmployee, createBlog)
+router.put("/editBlog",auth,isEmployee,editBlog)
+router.post('/getBlogDetails',getBlogDetails)
+router.get('/getAllBlogs',getAllBlogs)
+router.post('/getCreatorBlogs',getCreatorBlogs)
+router.delete('/deleteBlog',auth,isEmployee,deleteBlog)
 // ********************************************************************************************************
 //                                      Category routes (Only by Admin)
 // ********************************************************************************************************
-// Category can Only be Created by Admin
-// TODO: Put IsAdmin Middleware here
-router.post("/createCategory", auth, isAdmin,createBlogsCategory)
+// Category can Only be Created by Employee
+// TODO: Put IsEmployee Middleware here
+router.post("/createCategory", auth, isEmployee,createBlogsCategory)
 router.get("/showAllCategories", showAllBlogCategories)
 
 // ********************************************************************************************************

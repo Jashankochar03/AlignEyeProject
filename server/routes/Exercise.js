@@ -5,11 +5,15 @@ const router = express.Router()
 // Import the Controllers
 
 // Course Controllers Import
-//const {
-//  createDisease,
-//  getAllDiseases,
-//  getDiseaseDetails,
-//} = require("../controllers/Disease")
+const {
+createCourse,
+editCourse,
+getAllCourses,
+getCourseDetails,
+getCreatorCourses,
+getFullCourseDetails,
+deleteCourse
+} = require("../controllers/Exercise")
 
 
 // Categories Controllers Import
@@ -31,17 +35,16 @@ const {
 const { auth, isEmployee, isCustomer, isAdmin } = require("../middlewares/auth")
 
 // ********************************************************************************************************
-//                                      Disease routes
+//                                      Course routes
 // ********************************************************************************************************
 
-// Diseases can only be registered by admin
-//router.post("/createDisease", auth, isDoctor, createDisease)
-
-// Get all Registered Diseases
-//router.get("/getAllDiseases", getAllDiseases)
-// Get Details for a Specific One
-//router.get("/getDiseaseDetails", getDiseaseDetails)
-
+router.post("/createCourse", auth, isEmployee, createCourse)
+router.put("/editCourse",auth,isEmployee,editCourse)
+router.post('/getCourseDetails',getCourseDetails)
+router.get('/getAllCourses',getAllCourses)
+router.post('/getCreatorCourses',getCreatorCourses)
+router.delete('/deleteCourse',auth,isEmployee,deleteCourse)
+router.post("/getCourseFullDetail",auth,getFullCourseDetails)
 
 // ********************************************************************************************************
 //                                      Category routes (Only by Admin)
